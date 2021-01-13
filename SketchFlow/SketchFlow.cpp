@@ -10,9 +10,9 @@
 #include<map>
 
 using namespace std;
-typedef string Pkt; //ĞèÒª´¦ÀíµÄÊı¾İ°üÊÇstringĞÎÊ½µÄ
+typedef string Pkt; //éœ€è¦å¤„ç†çš„æ•°æ®åŒ…æ˜¯stringå½¢å¼çš„
 
-//¼ÇÂ¼Ã¿¸öÁ÷±»²ÉÑùÁË¶àÉÙ¸ö°ü
+//è®°å½•æ¯ä¸ªæµè¢«é‡‡æ ·äº†å¤šå°‘ä¸ªåŒ…
 map<string, int> samplingCount;
 
 class SF {
@@ -29,14 +29,14 @@ public:
 	SF(int word_n,int L=4): word_n(word_n),L(L) {
 		W = new uint32_t*[L];
 		for(int i=0;i<L;i++)
-			W[i] = new uint32_t[word_n]{};//³õÊ¼»¯Îª0
+			W[i] = new uint32_t[word_n]{};//åˆå§‹åŒ–ä¸º0
 	}
 
 	// when receive a Pkt, compute hash and virtual vector, update W, dicide sampling
 	int recPkt(Pkt p) {
 		uint32_t Hf = hash_crc(p); // hash val of a flow
 		uint32_t index = Hf % word_size; //which backet
-		set<int> indexOfmask; // ´æ´¢µÄÖµÎª0x1×óÒÆµÄÎ»Êı
+		set<int> indexOfmask; // å­˜å‚¨çš„å€¼ä¸º0x1å·¦ç§»çš„ä½æ•°
 		uint32_t virtual_vec = make_confined_vector(Hf, indexOfmask);
 
 		for (int i = 0; i < L; i++) {
@@ -56,16 +56,16 @@ public:
 	}
 
 	void sampling(Pkt p) {
-		samplingCount[p]++;//ÏÈµ÷ÓÃsamplingCount[],Èç²»´æÔÚ£¬»á×Ô¶¯²åÈë0Öµ¡£ÔÙ¶Ôvalue½øĞĞ++
+		samplingCount[p]++;//å…ˆè°ƒç”¨samplingCount[],å¦‚ä¸å­˜åœ¨ï¼Œä¼šè‡ªåŠ¨æ’å…¥0å€¼ã€‚å†å¯¹valueè¿›è¡Œ++
 	}
 
 	uint32_t hash_crc(Pkt p) {
 		return Crc32(p.c_str(),p.size());
 	}
 
-	//¸ù¾İflowIDÑ¡È¡vector_sizeÎ»×÷ÎªĞéÄâÏòÁ¿µÄÑÚÂë
-	//Ê×ÏÈ¸ù¾İhash(flowIF)µÄ32Î»½á¹û£¬ÀûÓÃ»¬¶¯´°¿Ú½øĞĞ³¢ÊÔ(Ã¿´Î»¬4Î»£¬8´Î»ú»á£©
-	//ÉÏÊö·½·¨µÄ½á¹ûÊÇ·ñ¾ùÔÈ·Ö²¼£¬Ã»ÓĞÖ¤Ã÷
+	//æ ¹æ®flowIDé€‰å–vector_sizeä½ä½œä¸ºè™šæ‹Ÿå‘é‡çš„æ©ç 
+	//é¦–å…ˆæ ¹æ®hash(flowIF)çš„32ä½ç»“æœï¼Œåˆ©ç”¨æ»‘åŠ¨çª—å£è¿›è¡Œå°è¯•(æ¯æ¬¡æ»‘4ä½ï¼Œ8æ¬¡æœºä¼šï¼‰
+	//ä¸Šè¿°æ–¹æ³•çš„ç»“æœæ˜¯å¦å‡åŒ€åˆ†å¸ƒï¼Œæ²¡æœ‰è¯æ˜
 	uint32_t make_confined_vector(uint32_t Hf, set<int> &indexOfmask) {
 		int tmp = 0;
 		for (int i = 0; i < 8; i++) {
@@ -93,7 +93,7 @@ public:
 		return res;
 	}
 
-	//Ëæ»úÑ¡È¡ĞéÄâÏòÁ¿ÖĞµÄÒ»Î»
+	//éšæœºé€‰å–è™šæ‹Ÿå‘é‡ä¸­çš„ä¸€ä½
 	uint32_t leave_one_bit_only(int vc, set<int> &indexOfmask) {
 		int rnd = rand() % indexOfmask.size();
 		set <int> ::const_iterator it(indexOfmask.begin());
@@ -102,12 +102,12 @@ public:
 		return 0x1 << (*it);
 	}
 
-	//·µ»ØvµÄ¶ş½øÖÆ±íÊ¾ÖĞ¡®1¡¯µÄ¸öÊı
+	//è¿”å›vçš„äºŒè¿›åˆ¶è¡¨ç¤ºä¸­â€˜1â€™çš„ä¸ªæ•°
 	int popcount(uint32_t v) {
 		int count = 0;
 
 		for (count = 0; v; ++count)
-			v &= (v - 1); // Çå³ı×îµÍÎ»µÄ1
+			v &= (v - 1); // æ¸…é™¤æœ€ä½ä½çš„1
 
 		return count;
 	}
@@ -122,7 +122,7 @@ public:
 };
 
 int main() {
-	int word_n = 110 * 1024 / 4; // ÂÛÎÄ¶ÔCAIDA¼¯µÄ²ÎÊı£¬< 2^16
+	int word_n = 110 * 1024 / 4; // è®ºæ–‡å¯¹CAIDAé›†çš„å‚æ•°ï¼Œ< 2^16
 	SF sk(word_n,3);
 
 	//srand((unsigned)time(NULL));
@@ -135,9 +135,9 @@ int main() {
 	Pkt p;
 	int i = 1;
 	while(getline(inFile, strLine)) {
-		if (strLine.empty() || (!isalnum(strLine[0]))) continue; //ÓĞĞ§Êı¾İµÄµÚÒ»Î»Ó¦Îª16½øÖÆ×Ö·û
+		if (strLine.empty() || (!isalnum(strLine[0]))) continue; //æœ‰æ•ˆæ•°æ®çš„ç¬¬ä¸€ä½åº”ä¸º16è¿›åˆ¶å­—ç¬¦
 
-		//Õâ¼¸¸ö²Ù×÷»¹Í¦·ÑÊ±¼ä£¬ÖÁÉÙÕ¼Ò»°ëÒÔÉÏ
+		//è¿™å‡ ä¸ªæ“ä½œè¿˜æŒºè´¹æ—¶é—´ï¼Œè‡³å°‘å ä¸€åŠä»¥ä¸Š
 		//eles[0] = strLine.substr(0, 8);
 		//eles[1] = strLine.substr(9, 8);
 		//eles[2] = strLine.substr(18, 2);
@@ -149,12 +149,12 @@ int main() {
 		p = strLine.substr(0, 30);
 		sk.recPkt(p);
 
-		////µÚÒ»´Î²ÉÑù£¬ÓÃÓÚdebug¡£
+		////ç¬¬ä¸€æ¬¡é‡‡æ ·ï¼Œç”¨äºdebugã€‚
 		//if (samplingCount.size() == 1) {
 		//	printf("%d\n", i);
 		//}
 
-		if (i++ % 50000 == 0) printf("%d ÍòĞĞ", (i-1)/10000);
+		if (i++ % 50000 == 0) printf("%d ä¸‡è¡Œ", (i-1)/10000);
 	}
 	inFile.close();
 
