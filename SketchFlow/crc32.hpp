@@ -1,4 +1,4 @@
-//À´Ô´£ºhttps://web.mit.edu/freebsd/head/sys/libkern/crc32.c
+//Ã€Â´Ã”Â´Â£Âºhttps://web.mit.edu/freebsd/head/sys/libkern/crc32.c
 #ifndef CRC32_H
 #define CRC32_H
 
